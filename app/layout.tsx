@@ -12,6 +12,9 @@ const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
 });
 
+const googleSiteVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+
 export const metadata: Metadata = {
   metadataBase: new URL(business.siteUrl),
   title: {
@@ -22,6 +25,9 @@ export const metadata: Metadata = {
   keywords: allSearchTerms,
   applicationName: business.name,
   alternates: { canonical: '/' },
+  ...(googleSiteVerification
+    ? { verification: { google: googleSiteVerification } }
+    : {}),
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
@@ -39,8 +45,6 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   manifest: '/manifest.webmanifest',
-  // Instalado na tela inicial do iPhone, o site abre em tela cheia com a
-  // barra de status clara sobre o laranja da marca.
   appleWebApp: {
     capable: true,
     title: business.name,
@@ -53,7 +57,12 @@ export const metadata: Metadata = {
       { url: '/icones/icone-512.png', sizes: '512x512', type: 'image/png' },
     ],
   },
-  other: { 'geo.placename': `${business.address.city}, ${business.address.state}`, 'geo.region': 'BR-SP' },
+  other: {
+    'geo.placename': `${business.address.city}, ${business.address.state}`,
+    'geo.region': 'BR-SP',
+    'geo.position': `${business.location.latitude};${business.location.longitude}`,
+    ICBM: `${business.location.latitude}, ${business.location.longitude}`,
+  },
 };
 
 export const viewport: Viewport = {
@@ -62,7 +71,6 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // nonce gerado pelo middleware: sem ele a CSP bloqueia o próprio JSON-LD
   const nonce = (await headers()).get('x-nonce') ?? undefined;
 
   return (
@@ -79,7 +87,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script
           nonce={nonce}
           type="application/ld+json"
-          // JSON-LD gerado a partir de lib/business.ts + lib/catalog.ts.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd()) }}
         />
         <script
