@@ -14,7 +14,7 @@ export const business = {
   name: 'Michel Food House',
   slogan: 'O sabor que impressiona na primeira mordida.',
   description:
-    'Michel Food House em Jacareí: lanches tradicionais, beirutes, combos, porções, hot dog, açaí e bebidas no Parque dos Sinos, com pedidos por WhatsApp e delivery na região.',
+    'Michel Food House em Jacareí: lanches tradicionais, beirutes, combos, porções, hot dog, açaí e bebidas no Bandeira Branca I, com pedidos por WhatsApp e delivery na região.',
 
   phoneDisplay: '(12) 98844-7711',
   phoneE164: '+5512988447711',
@@ -22,17 +22,12 @@ export const business = {
   email: 'contato@michelfoodhouse.com.br',
 
   address: {
-    street: 'Av. Santa Bárbara, 1107',
-    district: 'Parque dos Sinos',
+    street: 'R. Fidêncio José de Souza, 100',
+    district: 'Bandeira Branca I',
     city: 'Jacareí',
     state: 'SP',
-    postalCode: '12311-601',
+    postalCode: '12323-390',
     country: 'BR',
-  },
-
-  location: {
-    latitude: -23.2759385,
-    longitude: -45.9341326,
   },
 
   opensAt: '18:30',
@@ -54,7 +49,7 @@ export const business = {
   services: ['Refeição no local', 'Retirada na porta', 'Entrega sem contato'],
 
   mapsQuery:
-    'Michel Food House, Av. Santa Bárbara, 1107, Parque dos Sinos, Jacareí - SP, 12311-601',
+    'Michel Food House, R. Fidêncio José de Souza, 100, Bandeira Branca I, Jacareí - SP, 12323-390',
 
   /**
    * Endereço público do site, usado em canônico, Open Graph, sitemap e JSON-LD.
