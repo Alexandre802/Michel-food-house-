@@ -10,18 +10,18 @@ import { categories, products } from './catalog';
  */
 export const searchTerms = {
   marca: [
-    'Michel Food House', 'Michel Food House Jacareí', 'Michel Food House Parque dos Sinos',
+    'Michel Food House', 'Michel Food House Jacareí', 'Michel Food House Bandeira Branca I',
     'cardápio Michel Food House', 'preços Michel Food House', 'pedido Michel Food House',
     'WhatsApp Michel Food House', 'telefone Michel Food House', 'endereço Michel Food House',
     'Michel Food House delivery', 'Michel Food House avaliações', 'Michel Food House 4,8 estrelas',
-    'lanches Michel Food House', 'Michel Food House Parque dos Sinos Jacareí',
+    'lanches Michel Food House', 'Michel Food House Bandeira Branca I Jacareí',
   ],
   lugar: [
-    'lanchonete em Jacareí', 'lanchonete Parque dos Sinos', 'lanche em Jacareí', 'lanches em Jacareí',
-    'restaurante em Jacareí', 'restaurante Parque dos Sinos Jacareí', 'comida em Jacareí',
+    'lanchonete em Jacareí', 'lanchonete Bandeira Branca I', 'lanche em Jacareí', 'lanches em Jacareí',
+    'restaurante em Jacareí', 'restaurante Bandeira Branca I Jacareí', 'comida em Jacareí',
     'onde comer lanche em Jacareí', 'onde comer hambúrguer em Jacareí',
     'onde comer à noite em Jacareí', 'jantar em Jacareí', 'fast food Jacareí',
-    'lanche Parque dos Sinos Jacareí', 'delivery Parque dos Sinos',
+    'lanche Bandeira Branca I Jacareí', 'delivery Bandeira Branca I',
     'lanchonete perto de mim Jacareí', 'hambúrguer perto de mim Jacareí',
     'lanche perto de mim Jacareí', 'delivery perto de mim Jacareí', 'comida perto de mim Jacareí',
     'lanche tradicional perto de mim',
@@ -92,7 +92,7 @@ export const searchSections = [
   { title: 'Linha gourmet', terms: searchTerms.gourmet },
   { title: 'Açaí e bebidas', terms: searchTerms.acaiBebidas },
   { title: 'Entrega e retirada', terms: searchTerms.pedido },
-  { title: 'Parque dos Sinos e região', terms: searchTerms.lugar },
+  { title: 'Bandeira Branca I e região', terms: searchTerms.lugar },
 ] as const;
 
 /** JSON-LD Restaurant com dados oficiais do estabelecimento. */
@@ -115,11 +115,6 @@ export function restaurantJsonLd() {
       addressRegion: business.address.state,
       postalCode: business.address.postalCode,
       addressCountry: business.address.country,
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: business.location.latitude,
-      longitude: business.location.longitude,
     },
     hasMap: mapsDirectionsUrl,
     openingHoursSpecification: [
