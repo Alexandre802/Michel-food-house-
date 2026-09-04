@@ -1,29 +1,27 @@
-import { business, fullAddress } from './business';
+import { business, fullAddress, mapsDirectionsUrl } from './business';
 import { categories, products } from './catalog';
 
 /**
  * Termos de busca do negócio, agrupados por intenção.
  *
- * Estes termos alimentam CONTEÚDO VISÍVEL (a seção "O que servimos em
- * Jacareí"), o `keywords` do metadata e os textos alternativos. Não existe
- * bloco de texto escondido para robô: texto oculto que só o buscador enxerga
- * é cloaking, contraria as políticas de spam do Google e coloca o domínio em
- * risco de rebaixamento ou remoção do índice.
+ * Estes termos alimentam conteúdo visível, metadata e textos alternativos.
+ * Não existe bloco escondido para robô: o SEO local usa conteúdo útil e
+ * consistente com os dados reais do estabelecimento.
  */
 export const searchTerms = {
   marca: [
-    'Michel Food House', 'Michel Food House Jacareí', 'Michel Food House Bandeira Branca',
+    'Michel Food House', 'Michel Food House Jacareí', 'Michel Food House Parque dos Sinos',
     'cardápio Michel Food House', 'preços Michel Food House', 'pedido Michel Food House',
     'WhatsApp Michel Food House', 'telefone Michel Food House', 'endereço Michel Food House',
     'Michel Food House delivery', 'Michel Food House avaliações', 'Michel Food House 4,8 estrelas',
-    'lanches Michel Food House', 'Michel Food House Bandeira Branca I',
+    'lanches Michel Food House', 'Michel Food House Parque dos Sinos Jacareí',
   ],
   lugar: [
-    'lanchonete em Jacareí', 'lanchonete Bandeira Branca', 'lanche em Jacareí', 'lanches em Jacareí',
-    'restaurante em Jacareí', 'restaurante Bandeira Branca Jacareí', 'restaurante Bandeira Branca I',
-    'comida em Jacareí', 'onde comer lanche em Jacareí', 'onde comer hambúrguer em Jacareí',
+    'lanchonete em Jacareí', 'lanchonete Parque dos Sinos', 'lanche em Jacareí', 'lanches em Jacareí',
+    'restaurante em Jacareí', 'restaurante Parque dos Sinos Jacareí', 'comida em Jacareí',
+    'onde comer lanche em Jacareí', 'onde comer hambúrguer em Jacareí',
     'onde comer à noite em Jacareí', 'jantar em Jacareí', 'fast food Jacareí',
-    'lanche Bandeira Branca I Jacareí', 'delivery Bandeira Branca I',
+    'lanche Parque dos Sinos Jacareí', 'delivery Parque dos Sinos',
     'lanchonete perto de mim Jacareí', 'hambúrguer perto de mim Jacareí',
     'lanche perto de mim Jacareí', 'delivery perto de mim Jacareí', 'comida perto de mim Jacareí',
     'lanche tradicional perto de mim',
@@ -86,7 +84,7 @@ export const searchTerms = {
 
 export const allSearchTerms: string[] = Object.values(searchTerms).flat();
 
-/** Blocos da seção visível "O que servimos em Jacareí". */
+/** Blocos da seção visível de busca local. */
 export const searchSections = [
   { title: 'Lanches tradicionais', terms: searchTerms.tradicionais },
   { title: 'Beirutes', terms: searchTerms.beirutes },
@@ -94,10 +92,10 @@ export const searchSections = [
   { title: 'Linha gourmet', terms: searchTerms.gourmet },
   { title: 'Açaí e bebidas', terms: searchTerms.acaiBebidas },
   { title: 'Entrega e retirada', terms: searchTerms.pedido },
-  { title: 'Bandeira Branca e região', terms: searchTerms.lugar },
+  { title: 'Parque dos Sinos e região', terms: searchTerms.lugar },
 ] as const;
 
-/** JSON-LD Restaurant. Só campos confirmados — sem horário de fechamento. */
+/** JSON-LD Restaurant com dados oficiais do estabelecimento. */
 export function restaurantJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -107,6 +105,7 @@ export function restaurantJsonLd() {
     description: business.description,
     url: business.siteUrl,
     telephone: business.phoneE164,
+    email: business.email,
     priceRange: business.priceRangeSchema,
     servesCuisine: ['Lanches', 'Hambúrguer', 'Beirute', 'Açaí'],
     address: {
@@ -117,6 +116,26 @@ export function restaurantJsonLd() {
       postalCode: business.address.postalCode,
       addressCountry: business.address.country,
     },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: business.location.latitude,
+      longitude: business.location.longitude,
+    },
+    hasMap: mapsDirectionsUrl,
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Sunday'],
+        opens: '18:30',
+        closes: '23:00',
+      },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Friday', 'Saturday'],
+        opens: '18:30',
+        closes: '23:30',
+      },
+    ],
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: business.rating.value,
@@ -144,13 +163,11 @@ export function restaurantJsonLd() {
     smokingAllowed: false,
     keywords: allSearchTerms.join(', '),
     areaServed: { '@type': 'City', name: 'Jacareí' },
-    // Serviços confirmados pelo perfil do Google.
     additionalProperty: business.services.map((s) => ({
       '@type': 'PropertyValue',
       name: 'Serviço',
       value: s,
     })),
-    // Endereço legível, para leitores que não montam o PostalAddress.
     alternateName: `${business.name} — ${fullAddress}`,
   };
 }
