@@ -14,18 +14,6 @@ import { ROTULO_FORMA, pagamentoEmLinhas, type EscolhaPagamento, type FormaPagam
 
 export const runtime = 'nodejs';
 
-/**
- * Avisa a lanchonete de um pedido novo, em todo pedido fechado no site.
- *
- * O total é recalculado aqui a partir do catálogo, com base só nos ids e nas
- * quantidades. O que o navegador manda de preço é ignorado — assim um payload
- * adulterado não faz a cozinha ver um valor que não existe.
- *
- * O aviso nunca derruba o pedido: se o WhatsApp falhar ou não estiver
- * configurado, a rota responde 200 dizendo o que aconteceu, e o cliente segue
- * pelo deeplink wa.me normalmente.
- */
-
 interface Item {
   productId?: string;
   qty?: number;
@@ -42,30 +30,22 @@ interface Corpo {
   payment?: Partial<EscolhaPagamento> | null;
 }
 
-/** Nunca confia na forma vinda do navegador sem conferir contra o conjunto real. */
-function lerPagamento(bruto: Corpo['payment'], total: number): EscolhaPagamento {
-  const formas: FormaPagamento[] = ['pix', 'cartao', 'dinheiro'];
-  const forma = formas.includes(bruto?.forma as FormaPagamento)
-    ? (bruto!.forma as FormaPagamento)
-    : 'dinheiro';
-  const precisaTroco = forma === 'dinheiro' && bruto?.precisaTroco === true;
-  const bruteTroco = Number(bruto?.trocoPara);
-  // troco menor que o total é inconsistente: cai para "sem troco" em vez de
-  // mandar um número que confunde quem está na moto
-  const trocoPara =
-    precisaTroco && Number.isFinite(bruteTroco) && bruteTroco >= total ? bruteTroco : null;
-
+/**
+ * O Michel recebe somente por Pix ou cartão e sempre no atendimento
+ * (entrega ou retirada). Mesmo que alguém tente alterar o payload no
+ * navegador, o servidor normaliza para essas regras.
+ */
+function lerPagamento(bruto: Corpo['payment']): EscolhaPagamento {
+  const forma: FormaPagamento = bruto?.forma === 'cartao' ? 'cartao' : 'pix';
   return {
     forma,
-    momento: bruto?.momento === 'online' && forma !== 'dinheiro' ? 'online' : 'na-entrega',
-    precisaTroco: precisaTroco && trocoPara !== null,
-    trocoPara,
+    momento: 'na-entrega',
+    precisaTroco: false,
+    trocoPara: null,
   };
 }
 
 export async function POST(request: Request) {
-  // teto por solicitante: sem isso dá para inundar o WhatsApp da casa com
-  // pedidos falsos e queimar a cota da API
   const taxa = limitarTaxa(`pedido:${identificadorAnonimo(request)}`, 8, 60_000);
   if (!taxa.ok) {
     return NextResponse.json(
@@ -115,7 +95,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const pagamento = lerPagamento(corpo.payment, total);
+  const pagamento = lerPagamento(corpo.payment);
   const cliente = corpo.customer ?? {};
   const referencia = String(corpo.reference ?? '').replace(/[^A-Z0-9-]/gi, '').slice(0, 24);
 
@@ -131,7 +111,6 @@ export async function POST(request: Request) {
       .filter(Boolean)
       .join(' · ') || 'sem dados do cliente';
 
-  // texto completo, usado dentro da janela de 24 h
   const texto = [
     `🍔 *Novo pedido pelo site* — ${business.name}`,
     referencia ? `Pedido nº ${referencia}` : '',
@@ -158,12 +137,12 @@ export async function POST(request: Request) {
         : [`Endereço: ${(cliente.address ?? '').trim()}`]
       : ['Retirada no local — sem endereço de entrega.']),
     ...pagamentoEmLinhas(pagamento, total),
+    `Pagamento será feito na ${entrega ? 'entrega' : 'retirada'}.`,
     corpo.note?.trim() ? `Observações: ${String(corpo.note).trim().slice(0, 400)}` : '',
   ]
     .filter(Boolean)
     .join('\n');
 
-  // parâmetros do template: uma linha cada
   const resultado = await notifyStore(
     [
       `${ROTULO_FORMA[pagamento.forma]} · ${entrega ? 'Entrega' : 'Retirada'}`,
