@@ -60,8 +60,6 @@ export const metadata: Metadata = {
   other: {
     'geo.placename': `${business.address.city}, ${business.address.state}`,
     'geo.region': 'BR-SP',
-    'geo.position': `${business.location.latitude};${business.location.longitude}`,
-    ICBM: `${business.location.latitude}, ${business.location.longitude}`,
   },
 };
 
