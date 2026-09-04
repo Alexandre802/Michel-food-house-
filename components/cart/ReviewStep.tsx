@@ -3,20 +3,12 @@
 import { formatPrice } from '@/lib/catalog';
 import { enderecoEmLinhas } from '@/lib/endereco';
 import { taxaPara } from '@/lib/entrega';
-import { ROTULO_FORMA, valorDoTroco } from '@/lib/pagamento';
 import { cartTotal, lineProduct, orderTotal, useShop } from '@/lib/store';
 import { formatarTelefone } from '@/lib/whatsapp';
 import { Button } from '../ui/Button';
 import { WhatsAppIcon } from '../ui/Icons';
 
-/**
- * Revisão antes de enviar.
- *
- * É a última tela em que dá para consertar alguma coisa, então tudo que vai
- * para a cozinha aparece aqui — inclusive o endereço e o troco. Cada bloco
- * tem um atalho de volta ao passo que o gerou: descobrir um erro e ter que
- * recomeçar o checkout é o jeito mais rápido de perder o pedido.
- */
+/** Revisão final do pedido antes de enviar para a casa pelo WhatsApp. */
 export default function ReviewStep({
   note,
   onNote,
@@ -44,12 +36,10 @@ export default function ReviewStep({
   const subtotal = cartTotal(lines);
   const total = orderTotal(lines, mode);
   const taxa = entrega ? taxaPara(subtotal) : null;
-  const volta = valorDoTroco(payment, total);
-  const pagarAgora = payment.momento === 'online' && payment.forma !== 'dinheiro';
+  const formaPagamento = payment.forma === 'cartao' ? 'Cartão' : 'Pix';
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ── itens ── */}
       <Bloco titulo="Itens" onEdit={() => onEdit('sacola')}>
         <ul className="flex flex-col gap-1.5">
           {lines.map((line) => {
@@ -72,7 +62,6 @@ export default function ReviewStep({
         </ul>
       </Bloco>
 
-      {/* ── entrega ou retirada ── */}
       <Bloco titulo={entrega ? 'Entrega' : 'Retirada'} onEdit={() => onEdit('modo')}>
         {entrega ? (
           <div className="text-sm leading-relaxed text-white/90">
@@ -95,7 +84,6 @@ export default function ReviewStep({
         )}
       </Bloco>
 
-      {/* ── quem pediu ── */}
       <Bloco titulo="Cliente" onEdit={() => onEdit('login')}>
         <p className="text-sm font-bold text-white">{customer?.name || 'Não informado'}</p>
         {customer?.phone && (
@@ -104,26 +92,13 @@ export default function ReviewStep({
         {customer?.email && <p className="text-sm text-white/90">{customer.email}</p>}
       </Bloco>
 
-      {/* ── pagamento ── */}
       <Bloco titulo="Pagamento" onEdit={() => onEdit('pagamento')}>
-        <p className="text-sm font-bold text-white">{ROTULO_FORMA[payment.forma]}</p>
-        {payment.forma === 'dinheiro' && (
-          <p className="text-sm text-white/90">
-            {payment.precisaTroco && payment.trocoPara !== null
-              ? `Troco para ${formatPrice(payment.trocoPara)}${
-                  volta !== null && volta > 0 ? ` · levar ${formatPrice(volta)}` : ''
-                }`
-              : 'Não precisa de troco'}
-          </p>
-        )}
-        {payment.forma !== 'dinheiro' && (
-          <p className="text-sm text-white/90">
-            {pagarAgora ? 'Pagar agora, pelo site' : `A pagar na ${entrega ? 'entrega' : 'retirada'}`}
-          </p>
-        )}
+        <p className="text-sm font-bold text-white">{formaPagamento}</p>
+        <p className="text-sm text-white/90">
+          Pagamento somente na {entrega ? 'entrega' : 'retirada'}
+        </p>
       </Bloco>
 
-      {/* ── observações gerais ── */}
       <div className="flex flex-col gap-1.5">
         <label htmlFor="obs-pedido" className="text-sm font-bold text-white">
           Alguma observação para a casa? <span className="font-semibold text-white/65">(opcional)</span>
@@ -139,7 +114,6 @@ export default function ReviewStep({
         />
       </div>
 
-      {/* ── total ── */}
       <div className="glass rounded-2xl px-5 py-4">
         {taxa !== null && (
           <>
@@ -166,8 +140,6 @@ export default function ReviewStep({
         <Button size="lg" className="w-full" onClick={onSubmit} disabled={enviando}>
           {enviando ? (
             'Enviando…'
-          ) : pagarAgora ? (
-            `Pagar ${formatPrice(total)}`
           ) : (
             <>
               <WhatsAppIcon className="h-5 w-5" />
