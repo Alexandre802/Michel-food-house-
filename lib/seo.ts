@@ -95,7 +95,7 @@ export const searchSections = [
   { title: 'Bandeira Branca I e região', terms: searchTerms.lugar },
 ] as const;
 
-/** JSON-LD Restaurant com dados oficiais do estabelecimento. */
+/** JSON-LD Restaurant com dados confirmados do estabelecimento. */
 export function restaurantJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -105,7 +105,6 @@ export function restaurantJsonLd() {
     description: business.description,
     url: business.siteUrl,
     telephone: business.phoneE164,
-    email: business.email,
     priceRange: business.priceRangeSchema,
     servesCuisine: ['Lanches', 'Hambúrguer', 'Beirute', 'Açaí'],
     address: {
@@ -117,20 +116,6 @@ export function restaurantJsonLd() {
       addressCountry: business.address.country,
     },
     hasMap: mapsDirectionsUrl,
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Sunday'],
-        opens: '18:30',
-        closes: '23:00',
-      },
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Friday', 'Saturday'],
-        opens: '18:30',
-        closes: '23:30',
-      },
-    ],
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: business.rating.value,
