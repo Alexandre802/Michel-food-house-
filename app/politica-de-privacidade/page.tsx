@@ -4,7 +4,7 @@ import { business, fullAddress } from '@/lib/business';
 
 export const metadata: Metadata = {
   title: 'Política de privacidade',
-  description: `Como a ${business.name} trata os dados de quem faz pedido pelo site.`,
+  description: `Saiba como a ${business.name} trata dados de pedidos, contato, entrega e pagamento no site, com transparência e respeito à LGPD.`,
   alternates: { canonical: '/politica-de-privacidade' },
   // A página existe para quem procura, não para ranquear.
   robots: { index: true, follow: true },
