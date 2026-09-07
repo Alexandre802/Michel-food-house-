@@ -19,7 +19,6 @@ export const business = {
   phoneDisplay: '(12) 98844-7711',
   phoneE164: '+5512988447711',
   whatsapp: '5512988447711',
-  email: 'contato@michelfoodhouse.com.br',
 
   address: {
     street: 'R. Fidêncio José de Souza, 100',
@@ -30,17 +29,9 @@ export const business = {
     country: 'BR',
   },
 
-  opensAt: '18:30',
-  openingNote: 'Ter–Qui e Dom 18:30–23:00 • Sex–Sáb 18:30–23:30 • Segunda fechado',
-  openingHours: {
-    monday: null,
-    tuesday: { opens: '18:30', closes: '23:00' },
-    wednesday: { opens: '18:30', closes: '23:00' },
-    thursday: { opens: '18:30', closes: '23:00' },
-    friday: { opens: '18:30', closes: '23:30' },
-    saturday: { opens: '18:30', closes: '23:30' },
-    sunday: { opens: '18:30', closes: '23:00' },
-  },
+  // O horário ainda precisa ser confirmado pelo estabelecimento.
+  // Até lá, evitamos publicar horários possivelmente incorretos no Google.
+  openingNote: 'Consulte o horário de funcionamento pelo WhatsApp.',
 
   rating: { value: 4.8, count: 46, source: 'Google' },
   priceRange: 'R$ 20–40 por pessoa',
