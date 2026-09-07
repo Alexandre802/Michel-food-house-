@@ -5,10 +5,9 @@
  */
 
 /**
- * Endereço de produção enquanto não há domínio próprio.
- * É o alias estável que o cliente já divulga.
+ * Endereço público oficial do site enquanto não há domínio próprio.
  */
-const PRODUCAO_ATUAL = 'https://teste-steel-five-45.vercel.app';
+const PRODUCAO_ATUAL = 'https://michel-food-house.vercel.app';
 
 export const business = {
   name: 'Michel Food House',
@@ -46,11 +45,7 @@ export const business = {
    * Endereço público do site, usado em canônico, Open Graph, sitemap e JSON-LD.
    * NEXT_PUBLIC_SITE_URL permite migrar para domínio próprio sem alterar código.
    */
-  siteUrl:
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
-      : PRODUCAO_ATUAL),
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? PRODUCAO_ATUAL,
 } as const;
 
 export const fullAddress = `${business.address.street} - ${business.address.district}, ${business.address.city} - ${business.address.state}, ${business.address.postalCode}`;
