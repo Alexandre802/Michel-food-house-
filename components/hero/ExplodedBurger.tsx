@@ -61,7 +61,8 @@ function Layer({
           faixas se encaixam exatamente. */}
       <Image
         src={layer.src}
-        alt=""
+        alt={layer.alt}
+        aria-hidden="true"
         width={SOURCE.w}
         height={layer.height}
         priority={priority}
