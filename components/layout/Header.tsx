@@ -5,11 +5,11 @@ import { business } from '@/lib/business';
 import { Logo } from '../ui/Logo';
 
 const NAV = [
-  { href: '#inicio', label: 'Início' },
-  { href: '#cardapio', label: 'Cardápio' },
-  { href: '#sobre', label: 'Sobre nós' },
-  { href: '#promocoes', label: 'Promoções' },
-  { href: '#contato', label: 'Contato' },
+  { href: '/#inicio', section: '#inicio', label: 'Início' },
+  { href: '/#cardapio', section: '#cardapio', label: 'Cardápio' },
+  { href: '/#sobre', section: '#sobre', label: 'Sobre nós' },
+  { href: '/quarta', section: '', label: 'Quarta Especial' },
+  { href: '/#contato', section: '#contato', label: 'Contato' },
 ];
 
 export default function Header() {
@@ -24,9 +24,8 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // marca o item da navbar correspondente à seção visível
   useEffect(() => {
-    const ids = NAV.map((n) => n.href.slice(1));
+    const ids = NAV.map((n) => n.section).filter(Boolean).map((href) => href.slice(1));
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -50,7 +49,7 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex w-full max-w-[86rem] items-center justify-between gap-6 px-5 sm:px-8">
-        <a href="#inicio" className="flex shrink-0 items-center gap-3 text-white">
+        <a href="/" className="flex shrink-0 items-center gap-3 text-white">
           <Logo size={scrolled ? 36 : 44} className="transition-all duration-300" />
           <span className={`font-extrabold tracking-tight transition-all ${scrolled ? 'text-base' : 'text-lg'}`}>
             {business.name}
@@ -62,22 +61,26 @@ export default function Header() {
             <a
               key={item.href}
               href={item.href}
-              aria-current={active === item.href ? 'page' : undefined}
-              className="relative py-1 text-sm font-semibold text-white/85 transition-colors hover:text-white"
+              aria-current={item.section && active === item.section ? 'page' : undefined}
+              className={`relative py-1 text-sm font-semibold transition-colors ${
+                item.href === '/quarta' ? 'rounded-full border border-white/45 px-4 text-white hover:bg-white/10' : 'text-white/85 hover:text-white'
+              }`}
             >
               {item.label}
-              <span
-                className={`absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-white transition-all duration-300 ${
-                  active === item.href ? 'w-full opacity-100' : 'w-0 opacity-0'
-                }`}
-              />
+              {item.section && (
+                <span
+                  className={`absolute -bottom-0.5 left-0 h-0.5 rounded-full bg-white transition-all duration-300 ${
+                    active === item.section ? 'w-full opacity-100' : 'w-0 opacity-0'
+                  }`}
+                />
+              )}
             </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
           <a
-            href="#cardapio"
+            href="/#cardapio"
             className="hidden rounded-full border border-white/55 px-5 py-2.5 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:border-white hover:text-white sm:inline-flex"
           >
             Peça agora
@@ -106,7 +109,9 @@ export default function Header() {
                 <a
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="block border-b border-white/18 py-3.5 font-semibold text-white last:border-0"
+                  className={`block border-b border-white/18 py-3.5 font-semibold last:border-0 ${
+                    item.href === '/quarta' ? 'text-white' : 'text-white'
+                  }`}
                 >
                   {item.label}
                 </a>
