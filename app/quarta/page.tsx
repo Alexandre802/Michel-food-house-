@@ -1,8 +1,20 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { business, whatsappUrl } from '@/lib/business';
 import { WhatsAppIcon } from '@/components/ui/Icons';
+
+export const metadata: Metadata = {
+  title: 'Quarta Especial',
+  description: `Toda quarta-feira a ${business.name} prepara uma promoção diferente. Confira a novidade da semana e fale com a gente pelo WhatsApp.`,
+  alternates: { canonical: '/quarta' },
+  openGraph: {
+    title: `Quarta Especial | ${business.name}`,
+    description: `Toda quarta-feira tem uma promoção diferente na ${business.name}.`,
+    url: `${business.siteUrl}/quarta`,
+  },
+};
 
 export default function QuartaPage() {
   return (
@@ -32,7 +44,7 @@ export default function QuartaPage() {
                 Descubra na quarta-feira 👀
               </p>
               <p className="mx-auto mt-3 max-w-xl text-white/75">
-                Não vamos inventar uma oferta aqui: a promoção é divulgada conforme a semana. Chame no WhatsApp e descubra a da vez.
+                A promoção é divulgada conforme a semana. Chame no WhatsApp e descubra a da vez.
               </p>
 
               <a
