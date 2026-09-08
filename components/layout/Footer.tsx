@@ -4,10 +4,10 @@ import { Logo } from '../ui/Logo';
 import { WhatsAppIcon } from '../ui/Icons';
 
 const LINKS = [
-  { href: '#inicio', label: 'Início' },
-  { href: '#cardapio', label: 'Cardápio' },
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#contato', label: 'Contato' },
+  { href: '/#inicio', label: 'Início' },
+  { href: '/#cardapio', label: 'Cardápio' },
+  { href: '/#sobre', label: 'Sobre' },
+  { href: '/#contato', label: 'Contato' },
 ];
 
 export default function Footer() {
