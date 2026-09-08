@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="pt-BR" className={jakarta.variable}>
       <body className="antialiased">
         <a
-          href="#cardapio"
+          href="/#cardapio"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:font-bold focus:text-cocoa"
         >
           Pular para o cardápio
