@@ -30,3 +30,4 @@ jobs:
         with:
           name: michel-food-house-lanches
           path: /tmp/michel-food-house-lanches.zip
+# package requested assets
