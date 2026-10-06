@@ -1,0 +1,32 @@
+name: Package Michel Lanches Images
+on:
+  push:
+    branches: [main]
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package lunch photos
+        run: |
+          mkdir -p /tmp/michel-lanches
+          cp public/images/lanches/hamburguer.webp /tmp/michel-lanches/
+          cp public/images/lanches/hot-dog.webp /tmp/michel-lanches/
+          cp public/images/lanches/lanche-michel-02.webp /tmp/michel-lanches/americano.webp
+          cp public/images/lanches/x-burguer.webp /tmp/michel-lanches/
+          cp public/images/lanches/x-egg.webp /tmp/michel-lanches/
+          cp public/images/lanches/x-frango-bacon.webp /tmp/michel-lanches/
+          cp public/images/lanches/x-frango-egg-bacon.webp /tmp/michel-lanches/
+          cp public/images/lanches/x-frango-egg.webp /tmp/michel-lanches/
+          cp public/images/lanches/x-frango.webp /tmp/michel-lanches/
+          cp public/produtos/hot-bacon.webp /tmp/michel-lanches/
+          cp public/produtos/x-egg-bacon.webp /tmp/michel-lanches/
+          cp public/produtos/x-calabresa.webp /tmp/michel-lanches/
+          cp public/produtos/x-churrasco.webp /tmp/michel-lanches/
+          cp public/produtos/x-tudo.webp /tmp/michel-lanches/
+          cd /tmp && zip -r michel-food-house-lanches.zip michel-lanches
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: michel-food-house-lanches
+          path: /tmp/michel-food-house-lanches.zip
